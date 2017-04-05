@@ -22,18 +22,22 @@ public class Server {
                         new InputStreamReader(clientSocket.getInputStream()));
         ) {
 
+            BufferedReader stdIn =
+                    new BufferedReader(new InputStreamReader(System.in));
             String inputLine, outputLine;
+            String fromServer;
 
             // Initiate conversation with client
-            ServerProtocol sp = new ServerProtocol();
-            outputLine = sp.processInput(null);
-            out.println(outputLine);
+//            ServerProtocol sp = new ServerProtocol();
+//            outputLine = sp.processInput(null);
+//            fromServer = stdIn.readLine();
+//            //out.println(outputLine);
+//            out.println(fromServer);
 
-            while ((inputLine = in.readLine()) != null) {
-                outputLine = sp.processInput(inputLine);
-                out.println(outputLine);
-                if (outputLine.equals("Bye."))
-                    break;
+            while (true) {
+                //outputLine = sp.processInput(inputLine);
+                fromServer = stdIn.readLine();
+                out.println(fromServer);
             }
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "

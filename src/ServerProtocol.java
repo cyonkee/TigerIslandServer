@@ -7,22 +7,26 @@ public class ServerProtocol {
     private static final int SENTWELCOME = 1;
     private static final int SENTCONFIRMATION = 2;
     private static final int SENTPREPARE = 3;
-    //private static final String tournamentPassword = "password";
-
-   //private static final int NUMJOKES = 5;
+    private final String tournamentpassword = "password";
+    private final String username = "groupc";
+    private final String password = "password";
+    private static int pid;
+    private boolean isAuthenticationProtocol = true;
+    private boolean isChallengeProtocol = false;
+    private boolean isRoundProtocol = false;
+    private boolean isMatchProtocol = false;
+    private boolean isMoveProtocol = false;
 
     private int state = WAITING;
-    //private int currentJoke = 0;
-
-//    private String[] clues = { "Turnip", "Little Old Lady", "Atch", "Who", "Who" };
-//    private String[] answers = { "Turnip the heat, it's cold in here!",
-//            "I didn't know you could yodel!",
-//            "Bless you!",
-//            "Is there an owl in here?",
-//            "Is there an echo in here?" };
 
     public String processInput(String theInput) {
-        return authenticationProtocol(theInput);
+        if(isAuthenticationProtocol) {
+            return authenticationProtocol(theInput);
+        }
+        else if (isChallengeProtocol && !isRoundProtocol){
+            return challengeProtocol(theInput);
+        }
+        else return null;
     }
 
     private String authenticationProtocol(String theInput) {
@@ -31,7 +35,7 @@ public class ServerProtocol {
             theOutput = "WELCOME TO ANOTHER EDITION OF THUNDERDOME!";
             state = SENTWELCOME;
         } else if (state == SENTWELCOME) {
-            if (theInput.equalsIgnoreCase("ENTER THUNDERDOME password")) {
+            if (theInput.equalsIgnoreCase("ENTER THUNDERDOME " + tournamentpassword)) {
                 theOutput = "TWO SHALL ENTER, ONE SHALL LEAVE";
                 state = SENTCONFIRMATION;
             } else {
@@ -39,14 +43,24 @@ public class ServerProtocol {
                 state = WAITING;
             }
         } else if (state == SENTCONFIRMATION) {
-            if (theInput.equalsIgnoreCase("I AM groupc password")) {
-                theOutput = "WAIT FOR THE TOURNAMENT TO BEGIN groupc";
+            if (theInput.equalsIgnoreCase("I AM " + username + " " + password)) {
+                if(username == "groupc"){
+                    pid = 1;
+                }
+                theOutput = "WAIT FOR THE TOURNAMENT TO BEGIN " + pid;
                 state = SENTPREPARE;
+                isAuthenticationProtocol = false;
+                isChallengeProtocol = true;
             } else {
                 theOutput = "INCORRECT PASSWORD!";
                 state = WAITING;
             }
         }
+        return theOutput;
+    }
+
+    private String challengeProtocol(String theInput){
+        String theOutput = null;
         return theOutput;
     }
 }
